@@ -25,6 +25,9 @@
     <!-- google maps javascript -->
     <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyB16sGmIekuGIvYOfNoW9T44377IU2d2Es&sensor=true"></script>
 
+    <!--<script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>-->
+    <script src='lib/lodash.underscore.min.js'></script>
+    <script src='lib/angular-google-maps.min.js'></script>
 
     </head>
     <body ng-app="starter" ng-controller="MapCtrl">
@@ -35,6 +38,14 @@
         </ion-header-bar>
         <ion-content>
             <div id="map" data-tap-disabled="true"></div>
+            
+            <div id="map_canvas" ng-controller="mainCtrl">
+                <google-map center="map.center" zoom="map.zoom" draggable="true" options="options">
+                    <circle ng-repeat="c in circles track by c.id" center="c.center" stroke="c.stroke" fill="c.fill" radius="c.radius"
+                        visible="c.visible" geodesic="c.geodesic" editable="c.editable" draggable="c.draggable" clickable="c.clickable"></circle>
+                </google-map>
+            </div>
+          
           
         </ion-content>
 
