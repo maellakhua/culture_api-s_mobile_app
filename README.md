@@ -11,7 +11,7 @@ How To - Build & install apk
 3. Add cordova geolocation plugin
    > cordova plugin add org.apache.cordova.geolocation
 
-4. Download project from github , open file , cut&paste folder [www] to myProject
+4. Download project from github , open file , replace folder [www] to myProject
 
 5. Add an android platform
    > ionic platfrom add android
