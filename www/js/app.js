@@ -60,7 +60,7 @@ app.controller('MapCtrl', function ($scope, $cordovaGeolocation, $location, $ion
             if (dest.checked)
                 send.push(dest.text);
         });
-        var req = "http://62.217.125.30/~ellakuser/dev4/index.php/crawl_apis/data/lat/";
+        var req = "http://62.217.125.30/~ellakuser/master/index.php/crawl_apis/data/lat/";
         req += $scope.position.lat() + "/long/" + $scope.position.lng() + "/categories/";
         req += send.join("_");
 
@@ -218,19 +218,25 @@ app.controller('MapCtrl', function ($scope, $cordovaGeolocation, $location, $ion
                     });
                 });
     }
+    var previnfo;
     $scope.newMarker = function (i, x) {
         x.infow = new google.maps.InfoWindow();
         x.marker = new google.maps.Marker({
-            position: new google.maps.LatLng(x.lat, x.long ? x.long : x.lng),
+            position: new google.maps.LatLng(x.lat, x.long),
             map: $scope.map,
             icon: i.icon
         });
-        var content = '<a href="" ng-click="openRight(\'' + x.lat + '\')"><strong>' + x.name + '</a>';
+        var content = '<a href="" ng-click="openRight(\'' + x.lat + '\')"><strong>' + x.name + '</strong></a>';
         var compiled = $compile(content)($scope);
         x.infow.setContent(compiled[0]);
         x.opened = false;
-        google.maps.event.addListener(x.marker, 'click', function () {
+        google.maps.event.addListener(x.marker, 'mousedown', function () {
+        		if(previnfo){
+        				previnfo.close();
+        			}
+        		x.infow.open($scope.map, this);
             $scope.markerEvent(i, x);
+            previnfo = x.infow;
         });
     };
     $scope.markerEvent = function (a, b) {
@@ -242,7 +248,7 @@ app.controller('MapCtrl', function ($scope, $cordovaGeolocation, $location, $ion
         });
         a.showList = true;
         b.opened = true;
-        b.infow.open($scope.map, b.marker);
+        //b.infow.open($scope.map, b.marker);
     };
 
     $scope.onMap = function (list) {
@@ -418,7 +424,7 @@ app.controller('MapCtrl', function ($scope, $cordovaGeolocation, $location, $ion
 
         $scope.loading = $ionicLoading.show({
             content: 'Getting current location...',
-            showBackdrop: true
+            showBackdrop: false
         });
         var geoMarker;
         $cordovaGeolocation.getCurrentPosition().then(function (position) {
@@ -457,13 +463,12 @@ app.controller('MapCtrl', function ($scope, $cordovaGeolocation, $location, $ion
 
             $scope.map.setCenter(pos);
             $scope.getResults();
-            $ionicLoading.hide();
         }, function (error) {
+        		$ionicLoading.hide();
             var alertPopup = $ionicPopup.alert({
                 title: 'Oh no !',
                 template: '1. Geolocation failed <br>2. Blame google .'
-            });
-            $ionicLoading.hide();
+            });            
         });
     };
 
