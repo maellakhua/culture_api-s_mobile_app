@@ -106,3 +106,7 @@ em{
 .overflowno{
     white-space: normal !important;
 }
+#smimg img{
+    width: 25px;
+    height: 25px;
+}
