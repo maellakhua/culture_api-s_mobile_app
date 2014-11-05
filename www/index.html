@@ -75,13 +75,21 @@
                         {{item.type}}
                     </div>
                     <div ng-repeat="list in item.list| orderBy:'name'" ng-show="item.showList">
-                        <div class="item item-divider" style="text-align: left" ng-click="list.opened = !list.opened"> 
+                        <div class="item item-divider" style="text-align: left" ng-click="openWindow(item.type, list)"> 
                             {{list.name}}
                         </div>
                         <ion-list ng-show="list.opened" >
                             <ion-item id="{{list.lat}}" overflow-scroll="true">
                                 <p class="overflowno">{{list.name}}<br>
-                                    <em>{{list.address}}</em>
+                                    <em>{{list.address}}</em><br><br>
+                                    Description: "{{list.extra.description}}"<br>
+                                    Go to source page: <a href="{{list.extra.url}}">
+                                        <span id="smimg" ng-switch on="list.source">
+                                            <img ng-switch-when="Facebook" src="img/fbico.png" alt="Facebook">
+                                            <img ng-switch-when="Foursquare" src="img/4sqico.png" alt="Foursquare">
+                                            <img ng-switch-when="Google Plus" src="img/gplusico.png" alt="Google Plus">
+                                        </span>
+                                    </a>
                                 </p>
                                 <button class="button button-block button-small button-balanced ion-location" ng-click="onMap(list)" menu-close>See on Map</button>
                                 <button class="button button-block button-small button-energized ion-map" ng-click="calcRoute(list)" menu-close>Get Directions</button>
