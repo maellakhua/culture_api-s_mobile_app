@@ -67,7 +67,7 @@ app.controller('MapCtrl', function ($scope, $cordovaGeolocation, $location, $ion
         $http.get(req).
                 success(function (data, status, headers, config) {
                     data = data.results;
-                    // first : empty the lists, delete markerrs
+                    // first : empty the lists, delete markers
                     $scope.destList.forEach(function (i) {
                         $scope.deleteMarkers(i.list);
                         i.list = [];
@@ -218,6 +218,39 @@ app.controller('MapCtrl', function ($scope, $cordovaGeolocation, $location, $ion
                     });
                 });
     }
+    
+    $scope.openWindow = function(type, x){
+        x.opened = !x.opened;
+        if(x.opened && (x.extra == undefined || x.extra == null)){
+            $scope.getExtras(type, x.id, x.source);
+        }
+    }
+    
+    $scope.getExtras = function (type, id, source) {
+        var req = "http://62.217.125.30/~ellakuser/master/index.php/crawl_apis/extra/id/"+id+"/from/"+source;
+        $http.get(req).
+                success(function (data, status, headers, config) {
+                    var D = $scope.destList;
+                    for(var i=0; i<D.length; i++){
+                        if(D[i].type == type){
+                            for(var j=0; j<D[i].list.length; j++){
+                                if(D[i].list[j].id == id){
+                                    D[i].list[j].extra = data;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+        }).error(function (data, status, headers, config) {
+            $ionicLoading.hide();
+            $ionicPopup.alert({
+                title: 'Something went horribly wrong :(',
+                template: status
+            });
+        });
+    }
+    
     var previnfo;
     $scope.newMarker = function (i, x) {
         x.infow = new google.maps.InfoWindow();
@@ -226,7 +259,7 @@ app.controller('MapCtrl', function ($scope, $cordovaGeolocation, $location, $ion
             map: $scope.map,
             icon: i.icon
         });
-        var content = '<a href="" ng-click="openRight(\'' + x.lat + '\')"><strong>' + x.name + '</strong></a>';
+        var content = '<a href="" ng-click="openRight(\'' + x.lat + '\', \'' + i.type + '\', \'' + x.id + '\', \'' + x.source + '\')"><strong>' + x.name + '</strong></a>';
         var compiled = $compile(content)($scope);
         x.infow.setContent(compiled[0]);
         x.opened = false;
@@ -270,8 +303,8 @@ app.controller('MapCtrl', function ($scope, $cordovaGeolocation, $location, $ion
         var input = document.getElementById('pac-input');
 
         var auto_options = {
-            types: ['(regions)'],
-            componentRestrictions: {country: "gr"}
+            types: ['(regions)']
+            //componentRestrictions: {country: "gr"}
         };
 
         var autocomplete = new google.maps.places.Autocomplete(input, auto_options);
@@ -410,8 +443,9 @@ app.controller('MapCtrl', function ($scope, $cordovaGeolocation, $location, $ion
         }, 400);
     };
 
-    $scope.openRight = function (id) {
+    $scope.openRight = function (id, type, objId, objSource) {
         $ionicSideMenuDelegate.toggleRight();
+        $scope.getExtras(type, objId, objSource);
         //scroll
         $location.hash(id);
         $ionicScrollDelegate.anchorScroll(true);
