@@ -212,10 +212,10 @@ app.controller('MapCtrl', function ($scope, $cordovaGeolocation, $location, $ion
                 }).
                 error(function (data, status, headers, config) {
                     $ionicLoading.hide();
-                    $ionicPopup.alert({
+                    /*$ionicPopup.alert({
                         title: 'Something went horribly wrong :(',
                         template: status
-                    });
+                    });*/
                 });
     }
     
@@ -244,10 +244,11 @@ app.controller('MapCtrl', function ($scope, $cordovaGeolocation, $location, $ion
                     }
         }).error(function (data, status, headers, config) {
             $ionicLoading.hide();
-            $ionicPopup.alert({
+            // server side probably messed up
+            /*$ionicPopup.alert({
                 title: 'Something went horribly wrong :(',
                 template: status
-            });
+            });*/
         });
     }
     
